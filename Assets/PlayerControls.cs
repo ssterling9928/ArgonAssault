@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    [Header("General Setup Settings")]
+    [Tooltip("Controls How fast player ship moves around screen.")]
     [SerializeField] private float controlSpeed = 10f;
+
+    [Tooltip("Controls how far player ship can move on X Axis.")]
     [SerializeField] private float xRange = 5f;
+
+    [Tooltip("Controls how far player ship can move on Y Axis.")]
     [SerializeField] private Vector2 yRange;
 
+
+    [Header("Ship Lasers")]
+    [SerializeField] GameObject[] lasers;
+
+    
+    [Header("Player Ship Rotation Settings")]
     [SerializeField] float positionPitchFactor = -2f;
     [SerializeField] float controlPitichFactor = -10f;
 
@@ -15,6 +27,7 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] float controlYawFactor = 10f;
     [SerializeField] float controlRollFactor = 5f;
 
+    
 
     float horizontalThrow, verticalThrow;
 
@@ -23,6 +36,7 @@ public class PlayerControls : MonoBehaviour
     {
         ProcessTranslation();
         ProcessRotation();
+        ProcessFiring();
 
     }
 
@@ -59,5 +73,27 @@ public class PlayerControls : MonoBehaviour
 
 
         transform.localPosition = new Vector3(clampedXPos, clampedYPos, transform.localPosition.z);
+    }
+
+    void ProcessFiring() 
+    {
+        if (Input.GetButton("Jump"))
+        {
+            SetLasersActive(true);
+        }
+        else
+        {
+            SetLasersActive(false);
+        }
+    }
+
+
+    private void SetLasersActive(bool isActive)
+    {
+        foreach(var laser in lasers)
+        {
+            var emssionModule = laser.GetComponent<ParticleSystem>().emission;
+            emssionModule.enabled = isActive;
+        }
     }
 }
